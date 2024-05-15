@@ -7,15 +7,15 @@ import { Probot } from 'probot';
 // https://probot.github.io/docs/development/
 
 export default (app: Probot, cwd: string, getRouter: any) => {
-  app.on(['issues.opened'], async (context) => {
-    const issueComment = context.issue({
-      body: 'Thanks for opening this issue!',
-    });
-    await context.octokit.issues.createComment(issueComment);
-  });
+  // NOTE: sample code
+  // app.on(['issues.opened'], async (context) => {
+  //   const issueComment = context.issue({
+  //     body: 'Thanks for opening this issue!',
+  //   });
+  //   await context.octokit.issues.createComment(issueComment);
+  // });
 
-  // on pull request, check that pull request changed files have Korean characters, and if so, add a comment to the pull request
-  // and block the pull request from being merged
+  // On pull request, check that pull request changed files have Korean characters, and if so, add a comment to the pull request and block the pull request from being merged
   app.on(['pull_request.opened', 'pull_request.synchronize'], async (context) => {
     const pr = context.payload.pull_request;
     const owner = pr.base.repo.owner.login;
@@ -32,13 +32,8 @@ export default (app: Probot, cwd: string, getRouter: any) => {
 
     // leave a review comment on the pull request at the exact line where the Korean characters are found
     files.data.forEach(async (file) => {
-      const blob = await context.octokit.git.getBlob({ owner, repo, file_sha: file.sha });
-      const content = Buffer.from(blob.data.content, 'base64').toString('utf-8');
-
-      console.log(file.filename);
-      console.log(file.filename);
-      console.log(file.filename);
-      console.log(file.filename);
+      const blobResponse = await context.octokit.git.getBlob({ owner, repo, file_sha: file.sha });
+      const content = Buffer.from(blobResponse.data.content, 'base64').toString('utf-8');
       content.split('\n').forEach(async (line, index) => {
         if (koreanCharRegex.test(line)) {
           await context.octokit.pulls.createReview({
@@ -48,7 +43,7 @@ export default (app: Probot, cwd: string, getRouter: any) => {
             event: 'REQUEST_CHANGES',
             comments: [
               {
-                body: `This line contains Korean characters.`,
+                body: 'This line contains Korean characters.',
                 path: file.filename,
                 line: index + 1,
               },
