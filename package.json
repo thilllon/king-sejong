@@ -5,13 +5,18 @@
   "description": "Korean character detector",
   "author": "thilllon",
   "license": "ISC",
-  "homepage": "https://github.com//",
+  "homepage": "https://github.com/thilllon/king-sejong",
   "keywords": [
     "probot",
     "github",
     "probot-app"
   ],
+  "type": "module",
+  "engines": {
+    "node": "20"
+  },
   "scripts": {
+    "format": "prettier --write --list-different .",
     "build": "tsc",
     "start": "probot run ./lib/index.js",
     "test": "vitest"
@@ -22,12 +27,9 @@
   "devDependencies": {
     "@types/node": "^20.0.0",
     "nock": "^14.0.0-beta.5",
+    "prettier": "^3.2.5",
     "smee-client": "^2.0.0",
-    "vitest": "^1.3.1",
-    "typescript": "^5.3.3"
-  },
-  "engines": {
-    "node": ">= 18"
-  },
-  "type": "module"
+    "typescript": "^5.3.3",
+    "vitest": "^1.3.1"
+  }
 }
