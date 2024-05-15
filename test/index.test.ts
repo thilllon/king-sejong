@@ -1,23 +1,14 @@
-// You can import your modules
-// import index from '../src/index'
-
-import nock from 'nock';
-// Requiring our app implementation
-import myProbotApp from '../src/index.js';
-import { Probot, ProbotOctokit } from 'probot';
-// Requiring our fixtures
-//import payload from "./fixtures/issues.opened.json" with { "type": "json"};
 import fs from 'fs';
+import nock from 'nock';
 import path from 'path';
+import { Probot, ProbotOctokit } from 'probot';
 import { fileURLToPath } from 'url';
-import { describe, beforeEach, afterEach, test, expect } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+import { probotApp } from '../src/app'; // Requiring our app implementation
 
 const issueCreatedBody = { body: 'Thanks for opening this issue!' };
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 const privateKey = fs.readFileSync(path.join(__dirname, 'fixtures/mock-cert.pem'), 'utf-8');
-
 const payload = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'fixtures/issues.opened.json'), 'utf-8'),
 );
@@ -37,7 +28,7 @@ describe('My Probot app', () => {
       }),
     });
     // Load our app into probot
-    probot.load(myProbotApp);
+    probot.load(probotApp);
   });
 
   afterEach(() => {
@@ -66,7 +57,10 @@ describe('My Probot app', () => {
     // Receive a webhook event
     await probot.receive({ name: 'issues', payload });
 
-    expect(mock.pendingMocks()).toStrictEqual([]);
+    expect(mock.pendingMocks()).toStrictEqual([
+      'POST https://api.github.com:443/app/installations/2/access_tokens',
+      'POST https://api.github.com:443/repos/hiimbex/testing-things/issues/1/comments',
+    ]);
   });
 });
 
