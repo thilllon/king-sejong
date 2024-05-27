@@ -1,4 +1,6 @@
 import { createNodeMiddleware, createProbot } from 'probot';
+
+// This will be created after building the app
 import { probotApp } from '../../../lib/app.js';
 
 const requestListener = createNodeMiddleware(probotApp, {

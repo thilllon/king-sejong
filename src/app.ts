@@ -13,6 +13,9 @@ export const probotApp = (app: Probot) => {
     const pr = context.payload.pull_request;
     const owner = pr.base.repo.owner.login;
     const repo = pr.base.repo.name;
+    const koreanCharRegex = /[ㄱ-ㅎ가-힣]/;
+
+    let hasKoreanChar = false;
 
     const files = await context.octokit.pulls.listFiles({
       owner,
@@ -20,8 +23,6 @@ export const probotApp = (app: Probot) => {
       pull_number: pr.number,
       per_page: 999,
     });
-
-    const koreanCharRegex = /[ㄱ-ㅎ가-힣]/;
 
     // leave a review comment on the pull request at the exact line where the Korean characters are found
     files.data.forEach(async (file) => {
@@ -44,19 +45,28 @@ export const probotApp = (app: Probot) => {
           });
         }
       });
+      hasKoreanChar = true;
     });
 
     // if there are Korean characters in the file name, add a comment to the pull request and close the pull request
     const koreanFilenames = files.data.filter((file) => koreanCharRegex.test(file.filename));
     if (koreanFilenames.length > 0) {
-      const comment = context.issue({
-        body: [
-          'This pull request contains Korean characters in the file name. Please rename the files and try again.',
-          ...koreanFilenames.map((file) => `- ${file.filename}`),
-        ].join('\n'),
-      });
-      await context.octokit.issues.createComment(comment);
+      await context.octokit.issues.createComment(
+        context.issue({
+          body: [
+            'This pull request contains Korean characters in the file name. Please rename the files and try again.',
+            ...koreanFilenames.map((file) => `- ${file.filename}`),
+          ].join('\n'),
+        }),
+      );
       await context.octokit.pulls.update({ owner, repo, pull_number: pr.number, state: 'closed' });
+      hasKoreanChar = true;
+    }
+
+    if (!hasKoreanChar) {
+      await context.octokit.issues.createComment(
+        context.issue({ body: 'This pull request contains no Korean characters.' }),
+      );
     }
   });
 
