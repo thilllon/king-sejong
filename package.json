@@ -7,7 +7,9 @@
   "license": "ISC",
   "homepage": "https://github.com/thilllon/king-sejong",
   "keywords": [
-    "probot",
+    "king-sejong",
+    "sejong",
+    "korean detector",
     "github",
     "probot-app"
   ],
