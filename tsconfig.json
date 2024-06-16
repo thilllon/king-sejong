@@ -5,7 +5,10 @@
     "module": "Node16",
     "declaration": true,
     "sourceMap": true,
+    "removeComments": false,
     "outDir": "./lib",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
 
     /* Strict Type-Checking Options */
     "strict": true,
@@ -14,12 +17,8 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-
-    "removeComments": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src/"],
-  "compileOnSave": false
+  "compileOnSave": true
 }

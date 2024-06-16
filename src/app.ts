@@ -6,8 +6,7 @@ import { Probot } from 'probot';
 // To get your app running against GitHub, see:
 // https://probot.github.io/docs/development/
 
-// second argument: { cwd?: string; getRouter: any }
-export const probotApp = (app: Probot) => {
+export const probotApp = (app: Probot, _: { cwd?: string; getRouter: any }) => {
   // On pull request, check that pull request changed files have Korean characters, and if so, add a comment to the pull request and block the pull request from being merged
   app.on(['pull_request.opened', 'pull_request.synchronize'], async (context) => {
     const pr = context.payload.pull_request;

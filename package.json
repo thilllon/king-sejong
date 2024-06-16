@@ -17,7 +17,8 @@
   },
   "scripts": {
     "format": "prettier --write --list-different .",
-    "build": "rm -rf lib && tsc",
+    "build": "tsc",
+    "dev": "rm -rf lib && tsc --watch",
     "start": "probot run ./lib/app.js",
     "test": "vitest"
   },
